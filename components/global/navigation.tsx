@@ -17,20 +17,9 @@ export function Navigation() {
   // Detecta o scroll da página
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollTop = window.scrollY;
 
-      setIsScrolled(scrollTop > 20);
-
-      // Debug para verificar se o scroll está sendo detectado (remover em produção)
-      if (
-        typeof window !== "undefined" &&
-        process.env.NODE_ENV === "development"
-      ) {
-        console.log("Scroll detected:", {
-          scrollTop,
-          isScrolled: scrollTop > 20,
-        });
-      }
+      setIsScrolled(scrollTop > 50);
 
       // Se preventMinimize estiver ativo, não fecha o menu expandido
       if (preventMinimize) {
@@ -38,22 +27,13 @@ export function Navigation() {
       }
 
       // Fecha o menu expandido ao fazer scroll manual
-      if (scrollTop > 20 && isExpanded) {
+      if (scrollTop > 50 && isExpanded) {
         setIsExpanded(false);
       }
     };
 
-    // Adiciona listeners para diferentes tipos de scroll (incluindo mobile)
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    document.addEventListener("scroll", handleScroll, { passive: true });
-
-    // Chama handleScroll uma vez para definir o estado inicial
-    handleScroll();
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      document.removeEventListener("scroll", handleScroll);
-    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, [preventMinimize, isExpanded]);
 
   const handleSectionClick = (sectionId: string) => {
@@ -81,7 +61,7 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className={`fixed left-1/2 h-12 transform -translate-x-1/2 z-50`}
+      className={`fixed left-1/2 h-12 transform -translate-x-1/2 z-50 w-72 md:w-96`}
       initial={{ y: -100, opacity: 0 }}
       animate={{
         y: 0,
@@ -91,19 +71,14 @@ export function Navigation() {
       transition={{
         duration: 0.5,
         ease: "easeOut",
-        top: { duration: 0.3, ease: "easeInOut" },
-      }}
-      style={{
-        // Garante que funcione em todos os dispositivos
-        position: "fixed",
-        willChange: "transform, top, opacity",
+        top: { duration: 0.1, ease: "easeInOut" },
       }}
     >
       {/* Estado normal (no topo) ou expandido */}
       <AnimatePresence>
         {(!isScrolled || isExpanded) && (
           <motion.div
-            className="backdrop-blur-sm rounded-full shadow-full border w-72 md:w-96 flex justify-center"
+            className="backdrop-blur-sm rounded-full shadow-full border  flex justify-center"
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.8 }}
@@ -115,7 +90,7 @@ export function Navigation() {
                   key={section.id}
                   type="button"
                   onClick={() => handleSectionClick(section.id)}
-                  className="px-6 py-3 rounded-full font-semibold transition-all duration-300 ease-in-out cursor-pointer"
+                  className="px-4 md:px-6 py-3 rounded-full font-semibold transition-all duration-300 cursor-pointer"
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
@@ -137,7 +112,7 @@ export function Navigation() {
         {isScrolled && !isExpanded && (
           <motion.button
             type="button"
-            className="backdrop-blur-sm rounded-b-full w-72 md:w-96 flex justify-center shadow-full border cursor-pointer touch-manipulation"
+            className="backdrop-blur-sm rounded-b-full w-full flex justify-center border cursor-pointer"
             onClick={handleNavClick}
             aria-label="Expandir menu de navegação"
             initial={{ opacity: 0, scaleX: 0.5, y: -20 }}
@@ -153,21 +128,16 @@ export function Navigation() {
               transition: { duration: 0.2 },
             }}
             whileTap={{ scale: 0.98 }}
-            style={{
-              // Força exibição no mobile
-              display: "flex",
-              minHeight: "48px",
-              touchAction: "manipulation",
-            }}
           >
             <motion.div
-              className="px-4 py-3"
+              className="px-2 md:px-4 py-2"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.3 }}
             >
               <motion.div
-                className="w-28 h-1.5 bg-primary rounded-full"
+                className="bg-primary rounded-full"
+                style={{ width: "5rem", height: "0.35rem" }}
                 initial={{ scaleX: 0 }}
                 animate={{ scaleX: 1 }}
                 transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
