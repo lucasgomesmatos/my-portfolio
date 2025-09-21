@@ -18,34 +18,38 @@ export function Navigation() {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
 
-      // Se preventMinimize estiver ativo, não muda o estado na primeira vez
+      setIsScrolled(scrollTop > 50);
+
+      // Se preventMinimize estiver ativo, não fecha o menu expandido
       if (preventMinimize) {
-        setPreventMinimize(false); // Remove a prevenção para próximos scrolls
         return;
       }
 
-      setIsScrolled(scrollTop > 50);
-
-      // Fecha o menu expandido ao fazer scroll
-      if (scrollTop > 50) {
+      // Fecha o menu expandido ao fazer scroll manual
+      if (scrollTop > 50 && isExpanded) {
         setIsExpanded(false);
       }
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, [preventMinimize]);
+  }, [preventMinimize, isExpanded]);
 
   const handleSectionClick = (sectionId: string) => {
     // Scroll to section if it exists
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
-      // Previne a minimização no próximo scroll após clicar em uma seção
+      // Previne a minimização durante o scroll suave e por mais um tempo
       setPreventMinimize(true);
+
+      // Remove a prevenção após 2 segundos (tempo suficiente para o scroll suave terminar)
+      setTimeout(() => {
+        setPreventMinimize(false);
+      }, 2000);
     }
-    // Fecha o menu expandido após navegar
-    setIsExpanded(false);
+    // Mantém o menu expandido após navegar (não fecha mais)
+    // setIsExpanded(false); // Removido para manter expandido
   };
 
   const handleNavClick = () => {
