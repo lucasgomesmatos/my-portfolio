@@ -1,6 +1,6 @@
 "use client";
 
-import { IconMail } from "@tabler/icons-react";
+import { IconChevronRight } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
@@ -74,8 +74,8 @@ export const HeroSection = () => {
         size="lg"
         className="flex items-center justify-center"
       >
-        <IconMail className="size-4" />
-        <span>Me envie um e-mail</span>
+        <span>Fale comigo</span>
+        <IconChevronRight className="size-4" />
       </Button>
     </div>
   );
