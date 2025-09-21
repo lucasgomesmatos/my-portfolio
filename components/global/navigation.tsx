@@ -61,7 +61,7 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className={`fixed left-1/2 h-12 transform -translate-x-1/2 z-50 w-72 md:w-96`}
+      className={`sticky left-1/2 h-12 transform -translate-x-1/2 z-50 w-72 md:w-96`}
       initial={{ y: -100, opacity: 0 }}
       animate={{
         y: 0,
@@ -152,7 +152,7 @@ export function Navigation() {
         {isExpanded && (
           <motion.button
             type="button"
-            className="fixed inset-0 -z-10"
+            className="sticky inset-0 -z-10"
             aria-label="Fechar menu"
             tabIndex={0}
             onClick={() => setIsExpanded(false)}
