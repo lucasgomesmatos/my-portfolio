@@ -43,14 +43,14 @@ export const ExperienceSection = () => {
 
       <div className="flex flex-col lg:flex-row gap-8">
         {/* Tabs Navigation */}
-        <div className="flex lg:flex-col lg:min-w-[200px] overflow-x-auto lg:overflow-x-visible">
-          <div className="flex lg:flex-col gap-2 lg:gap-1 min-w-max lg:min-w-0 w-full">
+        <div className="flex flex-col lg:flex-col lg:min-w-[200px]">
+          <div className="flex flex-col lg:flex-col gap-2 lg:gap-1 w-full">
             {experiences.map((exp, index) => (
               <button
                 key={`${exp.company}-${exp.period}`}
                 type="button"
                 onClick={() => setActiveTab(index)}
-                className={`px-4 py-3 text-left text-sm font-medium transition-colors border-l-2 lg:border-b-0 border-b-2 whitespace-nowrap lg:whitespace-normal ${
+                className={`px-4 py-3 text-left text-sm font-medium transition-colors border-l-2 whitespace-normal ${
                   activeTab === index
                     ? "border-zinc-500 bg-zinc-500/10 text-zinc-700"
                     : "border-border hover:border-zinc-500/50 hover:bg-zinc-500/5 text-muted-foreground hover:text-foreground"
@@ -74,7 +74,7 @@ export const ExperienceSection = () => {
               <div className="mb-6">
                 <h3 className="text-2xl font-semibold text-foreground mb-2">
                   {exp.role}{" "}
-                  <span className="text-zinc-500">@ {exp.company}</span>
+                  <span className="text-muted-foreground">@ {exp.company}</span>
                 </h3>
                 <p className="text-muted-foreground">{exp.period}</p>
               </div>
