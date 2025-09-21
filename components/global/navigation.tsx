@@ -17,9 +17,20 @@ export function Navigation() {
   // Detecta o scroll da página
   useEffect(() => {
     const handleScroll = () => {
-      const scrollTop = window.scrollY;
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
 
-      setIsScrolled(scrollTop > 50);
+      setIsScrolled(scrollTop > 20);
+
+      // Debug para verificar se o scroll está sendo detectado (remover em produção)
+      if (
+        typeof window !== "undefined" &&
+        process.env.NODE_ENV === "development"
+      ) {
+        console.log("Scroll detected:", {
+          scrollTop,
+          isScrolled: scrollTop > 20,
+        });
+      }
 
       // Se preventMinimize estiver ativo, não fecha o menu expandido
       if (preventMinimize) {
@@ -27,13 +38,22 @@ export function Navigation() {
       }
 
       // Fecha o menu expandido ao fazer scroll manual
-      if (scrollTop > 50 && isExpanded) {
+      if (scrollTop > 20 && isExpanded) {
         setIsExpanded(false);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // Adiciona listeners para diferentes tipos de scroll (incluindo mobile)
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    document.addEventListener("scroll", handleScroll, { passive: true });
+
+    // Chama handleScroll uma vez para definir o estado inicial
+    handleScroll();
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("scroll", handleScroll);
+    };
   }, [preventMinimize, isExpanded]);
 
   const handleSectionClick = (sectionId: string) => {
@@ -71,7 +91,12 @@ export function Navigation() {
       transition={{
         duration: 0.5,
         ease: "easeOut",
-        top: { duration: 0.1, ease: "easeInOut" },
+        top: { duration: 0.3, ease: "easeInOut" },
+      }}
+      style={{
+        // Garante que funcione em todos os dispositivos
+        position: "fixed",
+        willChange: "transform, top, opacity",
       }}
     >
       {/* Estado normal (no topo) ou expandido */}
@@ -112,7 +137,7 @@ export function Navigation() {
         {isScrolled && !isExpanded && (
           <motion.button
             type="button"
-            className="backdrop-blur-sm rounded-b-full w-72 md:w-96 flex justify-center shadow-full border cursor-pointer"
+            className="backdrop-blur-sm rounded-b-full w-72 md:w-96 flex justify-center shadow-full border cursor-pointer touch-manipulation"
             onClick={handleNavClick}
             aria-label="Expandir menu de navegação"
             initial={{ opacity: 0, scaleX: 0.5, y: -20 }}
@@ -128,6 +153,12 @@ export function Navigation() {
               transition: { duration: 0.2 },
             }}
             whileTap={{ scale: 0.98 }}
+            style={{
+              // Força exibição no mobile
+              display: "flex",
+              minHeight: "48px",
+              touchAction: "manipulation",
+            }}
           >
             <motion.div
               className="px-4 py-3"
