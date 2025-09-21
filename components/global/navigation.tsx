@@ -61,17 +61,19 @@ export function Navigation() {
 
   return (
     <motion.nav
-      className={`sticky left-1/2 h-12 transform -translate-x-1/2 z-50 w-72 md:w-96`}
+      className={`fixed left-1/2 h-12 transform -translate-x-1/2 z-50 w-72 md:w-96 ${
+        isScrolled && !isExpanded
+          ? "nav-mobile-safe"
+          : "nav-mobile-safe-expanded"
+      }`}
       initial={{ y: -100, opacity: 0 }}
       animate={{
         y: 0,
         opacity: 1,
-        top: isScrolled && !isExpanded ? "0px" : "16px",
       }}
       transition={{
         duration: 0.5,
         ease: "easeOut",
-        top: { duration: 0.1, ease: "easeInOut" },
       }}
     >
       {/* Estado normal (no topo) ou expandido */}
@@ -152,7 +154,7 @@ export function Navigation() {
         {isExpanded && (
           <motion.button
             type="button"
-            className="sticky inset-0 -z-10"
+            className="fixed inset-0 -z-10"
             aria-label="Fechar menu"
             tabIndex={0}
             onClick={() => setIsExpanded(false)}

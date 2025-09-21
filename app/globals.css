@@ -191,8 +191,13 @@ html {
 }
 
 @keyframes mapBounce {
-  0%, 100% { transform: translate(-50%, -100%) scale(1); }
-  50% { transform: translate(-50%, -120%) scale(1.1); }
+  0%,
+  100% {
+    transform: translate(-50%, -100%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -120%) scale(1.1);
+  }
 }
 
 .custom-cursor-dot.click {
@@ -203,9 +208,15 @@ html {
 }
 
 @keyframes mapClick {
-  0% { transform: translate(-50%, -100%) scale(1); }
-  50% { transform: translate(-50%, -105%) scale(0.9); }
-  100% { transform: translate(-50%, -100%) scale(1); }
+  0% {
+    transform: translate(-50%, -100%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -105%) scale(0.9);
+  }
+  100% {
+    transform: translate(-50%, -100%) scale(1);
+  }
 }
 
 .custom-cursor.hover {
@@ -249,4 +260,30 @@ html {
 
 .cursor-grabbing {
   cursor: grabbing;
+}
+
+/* Navigation mobile-safe positioning */
+.nav-mobile-safe {
+  /* Fallback para navegadores que não suportam env() */
+  top: 8px;
+  /* Usa safe-area-inset-top quando disponível */
+  top: max(env(safe-area-inset-top), 8px);
+}
+
+.nav-mobile-safe-expanded {
+  /* Fallback para navegadores que não suportam env() */
+  top: 24px;
+  /* Usa safe-area-inset-top quando disponível */
+  top: max(calc(env(safe-area-inset-top) + 16px), 24px);
+}
+
+/* Para dispositivos com notch ou barras de status */
+@supports (padding: max(0px)) {
+  .nav-mobile-safe {
+    top: max(env(safe-area-inset-top), 8px);
+  }
+
+  .nav-mobile-safe-expanded {
+    top: max(calc(env(safe-area-inset-top) + 16px), 24px);
+  }
 }
