@@ -262,28 +262,24 @@ html {
   cursor: grabbing;
 }
 
-/* Navigation mobile-safe positioning */
-.nav-mobile-safe {
-  /* Fallback para navegadores que não suportam env() */
-  top: 8px;
-  /* Usa safe-area-inset-top quando disponível */
-  top: max(env(safe-area-inset-top), 8px);
-}
-
-.nav-mobile-safe-expanded {
-  /* Fallback para navegadores que não suportam env() */
-  top: 24px;
-  /* Usa safe-area-inset-top quando disponível */
-  top: max(calc(env(safe-area-inset-top) + 16px), 24px);
-}
-
-/* Para dispositivos com notch ou barras de status */
-@supports (padding: max(0px)) {
+/* Navigation mobile-safe positioning - only for mobile devices */
+@media (max-width: 767px) {
   .nav-mobile-safe {
     top: max(env(safe-area-inset-top), 8px);
   }
 
   .nav-mobile-safe-expanded {
     top: max(calc(env(safe-area-inset-top) + 16px), 24px);
+  }
+}
+
+/* Desktop positioning - usar posicionamento padrão */
+@media (min-width: 768px) {
+  .nav-mobile-safe {
+    top: 0px;
+  }
+
+  .nav-mobile-safe-expanded {
+    top: 16px;
   }
 }

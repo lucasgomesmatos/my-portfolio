@@ -1,6 +1,12 @@
 "use client";
 
+import {
+  getOptimizedVariants,
+  useReducedMotion,
+  useReducedPerformance,
+} from "@/lib/hooks/use-animations";
 import { IconChevronRight } from "@tabler/icons-react";
+import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 
@@ -15,6 +21,13 @@ export const HeroSection = () => {
   const [currentMoodIndex, setCurrentMoodIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
+
+  const prefersReducedMotion = useReducedMotion();
+  const isReducedPerformance = useReducedPerformance();
+  const variants = getOptimizedVariants(
+    prefersReducedMotion,
+    isReducedPerformance,
+  );
 
   useEffect(() => {
     const currentMood = moodEmoticons[currentMoodIndex];
@@ -46,37 +59,60 @@ export const HeroSection = () => {
   }, [currentMoodIndex, displayedText, isDeleting]);
 
   return (
-    <div className="flex flex-col items-center justify-center px-4 gap-3">
-      <div className="text-center">
-        <p className="text-lg">Oi! Eu sou o</p>
-        <h1 className="text-4xl font-semibold mt-2 tracking-wide">
+    <motion.div
+      className="flex flex-col items-center justify-center px-4 gap-3"
+      variants={variants.container}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div className="text-center" variants={variants.item}>
+        <motion.p className="text-lg" variants={variants.item}>
+          Oi! Eu sou o
+        </motion.p>
+        <motion.h1
+          className="text-4xl font-semibold mt-2 tracking-wide"
+          variants={variants.item}
+        >
           Lucas Matos{" "}
-          <span
+          <motion.span
             className="inline-block min-w-[3ch]"
             aria-label={`Emoticon animado: ${moodEmoticons[currentMoodIndex]?.label || ""}`}
             role="img"
+            variants={variants.item}
           >
             {displayedText}
             <span className="animate-pulse" aria-hidden="true">
               |
             </span>
-          </span>
-        </h1>
-      </div>
-      <div>
+          </motion.span>
+        </motion.h1>
+      </motion.div>
+      <motion.div variants={variants.item}>
         <p className="max-w-md text-center ">
           Um Desenvolvedor de Software ajudando pessoas na internet. Pessoas são
           o propósito e paixão é o combustível.
         </p>
-      </div>
-      <Button
-        variant="outline"
-        size="lg"
-        className="flex items-center justify-center"
+      </motion.div>
+      <motion.div
+        variants={variants.item}
+        whileHover={variants.itemHover}
+        whileTap={prefersReducedMotion ? {} : { scale: 0.95 }}
       >
-        <span>Fale comigo</span>
-        <IconChevronRight className="size-4" />
-      </Button>
-    </div>
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex items-center justify-center"
+        >
+          <span>Fale comigo</span>
+          <motion.div
+            initial={{ x: 0 }}
+            whileHover={prefersReducedMotion ? {} : { x: 4 }}
+            transition={{ duration: 0.2 }}
+          >
+            <IconChevronRight className="size-4" />
+          </motion.div>
+        </Button>
+      </motion.div>
+    </motion.div>
   );
 };
